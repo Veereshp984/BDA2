@@ -1,0 +1,7 @@
+userId,movieId,tag,timestamp
+1,101,action,1430164910
+2,101,thriller,1430164980
+1,102,comedy,1430164990
+3,101,action,1430165000
+2,103,drama,1430165050
+
