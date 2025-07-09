@@ -1,0 +1,17 @@
+8. Implement a word count program in Hadoop and Spark.
+
+from pyspark import SparkContext
+sc = SparkContext("local", "WordCount")
+# Load file
+text_file = sc.textFile("input8.txt")
+# Word count logic
+counts = text_file.flatMap(lambda line: line.split()) \
+                  .map(lambda word: (word, 1)) \
+                  .reduceByKey(lambda a, b: a + b)
+# Print result
+for word, count in counts.collect():
+    print(f"{word}: {count}")
+
+INPUT FILE Save as .csv
+Virat is talking with ABD
+ABD is listening 

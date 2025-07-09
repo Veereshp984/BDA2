@@ -1,0 +1,60 @@
+7. Use Hive to create, alter, and drop databases, tables, views, functions, and indexes.
+
+-- Step 1: Create Database
+CREATE DATABASE mydb;
+
+-- Step 2: Use the Database
+USE mydb;
+
+-- Step 3: Alter Database Properties
+ALTER DATABASE mydb SET DBPROPERTIES ('edited-by' = 'hive-user');
+
+-- Step 4: Create Table
+CREATE TABLE employees (
+    id INT,
+    name STRING,
+    salary FLOAT
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE;
+
+-- Step 5: Alter Table - Add Column
+ALTER TABLE employees ADD COLUMNS (age INT);
+
+-- Step 6: Rename Table
+ALTER TABLE employees RENAME TO workers;
+
+-- Step 7: Create View
+CREATE VIEW high_salary AS
+SELECT * FROM workers WHERE salary > 5000;
+
+-- Step 8: Recreate View (simulating ALTER)
+DROP VIEW high_salary;
+CREATE VIEW high_salary AS
+SELECT * FROM workers WHERE salary > 10000;
+
+-- Step 9: Register Temporary UDF (adjust path/classname if needed)
+-- NOTE: This requires the JAR file to exist. Uncomment if you have a UDF.
+-- ADD JAR /path/to/myfunc.jar;
+-- CREATE TEMPORARY FUNCTION my_upper AS 'com.example.MyUpperFunction';
+
+-- Step 10: Create Index
+CREATE INDEX emp_index ON TABLE workers (id)
+AS 'COMPACT'
+WITH DEFERRED REBUILD;
+
+-- Step 11: Rebuild Index
+ALTER INDEX emp_index ON workers REBUILD;
+
+-- Step 12: Drop Index
+DROP INDEX emp_index ON workers;
+
+-- Step 13: Drop View
+DROP VIEW high_salary;
+
+-- Step 14: Drop Table
+DROP TABLE workers;
+
+-- Step 15: Drop Database
+DROP DATABASE mydb CASCADE; 

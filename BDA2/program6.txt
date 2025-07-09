@@ -1,0 +1,46 @@
+6. Develop Pig Latin scripts to sort, group, join, project, and filter the data.
+
+INPUT:
+a. students.txt
+1,John,22
+2,Alice,23
+3,Bob,22
+4,David,24
+Each line: StudentID,Name,Age
+b. marks.txt
+1,85
+2,91
+3,78
+4,88
+Each line: StudentID,Marks
+
+PROGRAM:
+-- Load the files
+A = LOAD 'students.txt' USING PigStorage(',') AS (id:int, name:chararray, age:int);
+B = LOAD 'marks.txt' USING PigStorage(',') AS (id:int, marks:int);
+
+-- Filter students older than 22
+C = FILTER A BY age > 22;
+
+-- Select only name and age
+D = FOREACH C GENERATE name, age;
+
+-- Join student info with marks
+E = JOIN A BY id, B BY id;
+
+-- Group by age
+F = GROUP A BY age;
+
+-- Count students in each age group
+G = FOREACH F GENERATE group AS age, COUNT(A) AS total;
+
+-- Sort by age descending
+H = ORDER A BY age DESC;
+
+-- Save output
+STORE D INTO 'out_filtered' USING PigStorage(',');
+STORE E INTO 'out_joined' USING PigStorage(',');
+STORE G INTO 'out_grouped' USING PigStorage(',');
+STORE H INTO 'out_sorted' USING PigStorage(',');
+
+OUTPUT:  pig -x local student_analysis.pig 

@@ -1,0 +1,56 @@
+5. Implement Functions: Count – Sort – Limit – Skip – Aggregate using MongoDB
+
+Create a file :filename.js
+ const { MongoClient } = require('mongodb'); 
+const uri = 'mongodb://localhost:27017'; // Update if using MongoDB Atlas 
+const client = new MongoClient(uri); 
+async function run() {  
+  try { 
+    await client.connect(); 
+    const db = client.db('testDB'); 
+    const users = db.collection('users');  
+    // 1. Count 
+    const count = await users.countDocuments({ city: "New York" }); 
+    console.log("Count of users from New York:", count); 
+
+    // 2. Sort (by age descending) 
+    const sortedUsers = await users.find().sort({ age: -1 }).toArray(); 
+    console.log("Sorted users by age (desc):", sortedUsers); 
+
+    // 3. Limit (get top 2) 
+    const limitedUsers = await users.find().limit(2).toArray(); 
+    console.log("Top 2 users:", limitedUsers); 
+
+    // 4. Skip (skip first 2) 
+    const skippedUsers = await users.find().skip(2).toArray(); 
+    console.log("Users after skipping first 2:", skippedUsers);  
+
+    // 5. Aggregate (group by city and count users) 
+    const aggregation = await users.aggregate([  
+      { $group: { _id: "$city", count: { $sum: 1 } } }, 
+      { $sort: { count: -1 } } 
+    ]).toArray(); 
+    console.log("User count by city:", aggregation); 
+
+  } finally { 
+    await client.close(); 
+  } 
+} 
+run().catch(console.error); 
+
+INPUT:
+
+Step 1: Insert Sample Data into MongoDB
+>mongosh
+Then paste:
+use testDB
+db.users.insertMany([
+  { name: "Alice", age: 25, city: "New York" }, 
+  { name: "Bob", age: 30, city: "Los Angeles" }, 
+  { name: "Charlie", age: 35, city: "Chicago" }, 
+  { name: "David", age: 28, city: "New York" }, 
+  { name: "Eve", age: 22, city: "Chicago" } 
+])
+
+STEP 2: RUN THE PGM
+node filename.js 
